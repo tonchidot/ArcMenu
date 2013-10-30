@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        app:parentSize="44px"
         app:childSize="44px"
         custom:fromDegrees="270.0"
         custom:toDegrees="360.0" >
