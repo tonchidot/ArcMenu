@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_centerHorizontal="true" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <com.capricorn.ArcLayout
         xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -13,11 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        app:parentSize="44px"
         app:childSize="44px"
+        app:parentSize="44px"
         custom:fromDegrees="270.0"
-        custom:toDegrees="360.0" >
-    </com.capricorn.ArcLayout>
+        custom:toDegrees="360.0" />
 
     <RelativeLayout
         android:id="@+id/control_layout"
@@ -36,4 +31,4 @@
             android:src="@drawable/composer_icn_plus" />
     </RelativeLayout>
 
-</RelativeLayout>
+</merge>
