@@ -48,6 +48,8 @@ public class ArcLayout extends ViewGroup {
 
     private int mChildPadding = 5;
 
+    private int mParentSize;
+
     private int mLayoutPadding = 10;
 
     public static final float DEFAULT_FROM_DEGREES = 270.0f;
@@ -77,6 +79,7 @@ public class ArcLayout extends ViewGroup {
             mFromDegrees = a.getFloat(R.styleable.ArcLayout_fromDegrees, DEFAULT_FROM_DEGREES);
             mToDegrees = a.getFloat(R.styleable.ArcLayout_toDegrees, DEFAULT_TO_DEGREES);
             mChildSize = Math.max(a.getDimensionPixelSize(R.styleable.ArcLayout_childSize, 0), 0);
+            mParentSize = Math.max(a.getDimensionPixelSize(R.styleable.ArcLayout_parentSize, 0), 0);
 
             a.recycle();
         }
@@ -110,7 +113,7 @@ public class ArcLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int radius = mRadius = computeRadius(Math.abs(mToDegrees - mFromDegrees), getChildCount(), mChildSize,
-                mChildPadding, MIN_RADIUS);
+                mChildPadding, mParentSize);
         final int size = radius * 2 + mChildSize + mChildPadding + mLayoutPadding * 2;
 
         setMeasuredDimension(size, size);
@@ -125,7 +128,7 @@ public class ArcLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int centerX = getWidth() / 2;
-        final int centerY = getHeight() / 2;
+        final int centerY = checkTopSemicircular() ? getHeight() - mParentSize / 2 : getHeight() / 2;
         final int radius = mExpanded ? mRadius : 0;
 
         final int childCount = getChildCount();
@@ -137,6 +140,10 @@ public class ArcLayout extends ViewGroup {
             degrees += perDegrees;
             getChildAt(i).layout(frame.left, frame.top, frame.right, frame.bottom);
         }
+    }
+
+    private boolean checkTopSemicircular() {
+        return mToDegrees >= 180 && (mToDegrees < 360 || mToDegrees == 0) && mFromDegrees >= 180 && (mFromDegrees < 360 || mFromDegrees == 0);
     }
 
     /**
@@ -202,7 +209,7 @@ public class ArcLayout extends ViewGroup {
     private void bindChildAnimation(final View child, final int index, final long duration) {
         final boolean expanded = mExpanded;
         final int centerX = getWidth() / 2;
-        final int centerY = getHeight() / 2;
+        final int centerY = checkTopSemicircular() ? getHeight() - mParentSize / 2 : getHeight() / 2;
         final int radius = expanded ? 0 : mRadius;
 
         final int childCount = getChildCount();
@@ -275,6 +282,20 @@ public class ArcLayout extends ViewGroup {
 
     public int getChildSize() {
         return mChildSize;
+    }
+
+    public void setParentSize(int size) {
+        if (mParentSize == size || size < 0) {
+            return;
+        }
+
+        mParentSize = size;
+
+        requestLayout();
+    }
+
+    public int getParentSize() {
+        return mParentSize;
     }
 
     /**

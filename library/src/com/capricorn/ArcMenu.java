@@ -45,6 +45,8 @@ public class ArcMenu extends RelativeLayout {
 
     private ImageView mHintView;
 
+    private ViewGroup mControlLayout;
+
     public ArcMenu(Context context) {
         super(context);
         init(context);
@@ -62,9 +64,9 @@ public class ArcMenu extends RelativeLayout {
 
         mArcLayout = (ArcLayout) findViewById(R.id.item_layout);
 
-        final ViewGroup controlLayout = (ViewGroup) findViewById(R.id.control_layout);
-        controlLayout.setClickable(true);
-        controlLayout.setOnTouchListener(new OnTouchListener() {
+        mControlLayout = (ViewGroup) findViewById(R.id.control_layout);
+        mControlLayout.setClickable(true);
+        mControlLayout.setOnTouchListener(new OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -91,6 +93,13 @@ public class ArcMenu extends RelativeLayout {
             int defaultChildSize = mArcLayout.getChildSize();
             int newChildSize = a.getDimensionPixelSize(R.styleable.ArcLayout_childSize, defaultChildSize);
             mArcLayout.setChildSize(newChildSize);
+            int defaultParentSize = mArcLayout.getParentSize();
+            int newParentSize = a.getDimensionPixelSize(R.styleable.ArcLayout_parentSize, defaultParentSize);
+            mArcLayout.setParentSize(newParentSize);
+
+            LayoutParams params = (LayoutParams) mControlLayout.getLayoutParams();
+            params.width = params.height = newParentSize;
+            mControlLayout.setLayoutParams(params);
 
             a.recycle();
         }

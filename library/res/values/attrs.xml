@@ -3,17 +3,20 @@
     <attr name="fromDegrees" format="float|reference" />
     <attr name="toDegrees" format="float|reference" />
     <attr name="childSize" format="dimension|reference" />
+    <attr name="parentSize" format="dimension|reference" />
 
 	<declare-styleable name="ArcLayout">
         <attr name="fromDegrees"/>
         <attr name="toDegrees"/>
         <attr name="childSize"/>
+        <attr name="parentSize"/>
 	</declare-styleable>
 
     <declare-styleable name="ArcMenu">
         <attr name="fromDegrees"/>
         <attr name="toDegrees"/>
         <attr name="childSize"/>
+        <attr name="parentSize"/>
     </declare-styleable>
 	
 	<declare-styleable name="RayLayout">
