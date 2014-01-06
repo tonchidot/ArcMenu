@@ -25,11 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -38,7 +38,6 @@ import android.widget.RelativeLayout;
  * 2.0</a> (for iOS).
  * 
  * @author Capricorn
- * 
  */
 public class ArcMenu extends RelativeLayout {
     private ArcLayout mArcLayout;
@@ -67,10 +66,18 @@ public class ArcMenu extends RelativeLayout {
         mControlLayout = (ViewGroup) findViewById(R.id.control_layout);
         mControlLayout.setClickable(true);
         mControlLayout.setOnTouchListener(new OnTouchListener() {
+            float downX;
+            float downY;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    downX = event.getX();
+                    downY = event.getY();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP &&
+                        Math.abs((event.getX() - downX)) < v.getWidth() / 2 &&
+                        Math.abs((event.getY() - downY)) < v.getHeight() / 2) {
                     mHintView.startAnimation(createHintSwitchAnimation(mArcLayout.isExpanded()));
                     mArcLayout.switchState(true);
                 }
