@@ -24,12 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
+import android.view.animation.LayoutAnimationController;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
-import android.view.animation.Animation.AnimationListener;
 
 /**
  * A Layout that arranges its children around its center. The arc can be set by
@@ -38,9 +39,14 @@ import android.view.animation.Animation.AnimationListener;
  * WRAP_CONTENT.
  * 
  * @author Capricorn
- * 
  */
 public class ArcLayout extends ViewGroup {
+    public interface ArcLayoutListener {
+        void onAnimationStarted(ArcLayout layout);
+
+        void onAnimationEnded(ArcLayout layout);
+    }
+
     /**
      * children will be set the same size.
      */
@@ -66,6 +72,8 @@ public class ArcLayout extends ViewGroup {
     private int mRadius;
 
     private boolean mExpanded = false;
+
+    private ArcLayoutListener mListener;
 
     public ArcLayout(Context context) {
         super(context);
@@ -225,17 +233,25 @@ public class ArcLayout extends ViewGroup {
         Animation animation = mExpanded ? createShrinkAnimation(0, toXDelta, 0, toYDelta, startOffset, duration,
                 interpolator) : createExpandAnimation(0, toXDelta, 0, toYDelta, startOffset, duration, interpolator);
 
+        final boolean isFirst = getTransformedIndex(expanded, childCount, index) == 0;
         final boolean isLast = getTransformedIndex(expanded, childCount, index) == childCount - 1;
         animation.setAnimationListener(new AnimationListener() {
 
             @Override
             public void onAnimationStart(Animation animation) {
+                if (isFirst) {
+                    postDelayed(new Runnable() {
 
+                        @Override
+                        public void run() {
+                            onFirstAnimationStart();
+                        }
+                    }, 0);
+                }
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
 
             @Override
@@ -316,8 +332,13 @@ public class ArcLayout extends ViewGroup {
         if (!showAnimation) {
             requestLayout();
         }
-        
+
         invalidate();
+    }
+
+    private void onFirstAnimationStart() {
+        if (mListener != null)
+            mListener.onAnimationStarted(this);
     }
 
     private void onAllAnimationsEnd() {
@@ -327,6 +348,11 @@ public class ArcLayout extends ViewGroup {
         }
 
         requestLayout();
+        if (mListener != null)
+            mListener.onAnimationEnded(this);
     }
 
+    public void setListener(ArcLayoutListener listener) {
+        mListener = listener;
+    }
 }
